@@ -65,12 +65,15 @@
             if (who === 0) {
                 document.getElementById('thestatus_bar').innerHTML = 'Player wins!';
                 alert('Player wins!');
+                document.getElementById('winsgames').innerHTML = parseInt(document.getElementById('winsgames').innerHTML) + 1
             } else if (who === 1) {
                 document.getElementById('thestatus_bar').innerHTML = 'Computer wins!';
                 alert('Computer wins!');
+                document.getElementById('lossesgames').innerHTML = parseInt(document.getElementById('lossesgames').innerHTML) + 1
             } else if (who === 3) {
                 document.getElementById('thestatus_bar').innerHTML = 'Draw!';
                 alert('Draw!');
+                document.getElementById('drawsgames').innerHTML = parseInt(document.getElementById('drawsgames').innerHTML) + 1
             } else {
                 document.getElementById('thestatus_bar').innerHTML = 'Error!';
                 alert('Error!');
@@ -429,6 +432,7 @@
 
 <span id='thestatus_bar'>Press START</span>
       </pre>
+        <hr /> Wins: <span id="winsgames">0</span><br /> Draws: <span id="drawsgames">0</span><br /> Losses: <span id="lossesgames">0</span><br />
     </div>
 </body>
 
