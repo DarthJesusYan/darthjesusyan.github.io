@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ptt progress</title>
+  <script>
+ function iknow() {
+  document.getElementById("attention").innerHTML = "";
+  document.getElementById("attention").style = "";
+}
+
+function getCookie(cname)
+{
+  var name = cname + "=";
+  var ca = document.cookie.split(';');
+  for(var i=0; i<ca.length; i++) 
+  {
+    var c = ca[i].trim();
+    if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+  }
+  return "";
+}
+
+function readCookie() {
+  var ptt2push = Number(getCookie("ptt2push"));
+  var scorepushed = Number(getCookie("scorepushed"));
+  var b10floor = Number(getCookie("b10floor"));
+  var b30floor = Number(getCookie("b30floor"));
+  document.getElementById("ptt2push").value = ptt2push;
+  document.getElementById("scorepushed").value = scorepushed;
+  document.getElementById("b10floor").value = b10floor;
+  document.getElementById("b30floor").value = b30floor;
+  pushedchange();
+}
+
+function saveCookie() {
+  document.cookie = "ptt2push=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+  document.cookie = "scorepushed=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+  document.cookie = "b10floor=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+  document.cookie = "b30floor=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+  var d = new Date();
+  d.setTime(d.getTime()+(exdays*365*24*60*60*1000));
+  var expires = "expires="+d.toGMTString();
+  var ptt2push = Number(document.getElementById("ptt2push").value);
+  var scorepushed = Number(document.getElementById("scorepushed").value);
+  var b10floor = Number(document.getElementById("b10floor").value);
+  var b30floor = Number(document.getElementById("b30floor").value);
+  document.cookie = "ptt2push" + "=" + ptt2push + "; " + expires;
+  document.cookie = "scorepushed" + "=" + scorepushed + "; " + expires;
+  document.cookie = "b10floor" + "=" + b10floor + "; " + expires;
+  document.cookie = "b30floor" + "=" + b30floor + "; " + expires;
+}
+
+
+function ptt2score() {
+  var ptt2p = document.getElementById("ptt2push").value;
+  var score2p1 = 0;
+  var score2p2 = 0;
+  score2p1 = ptt2p * 12000000;
+  score2p2 = ptt2p * 8000000;
+  document.getElementById("pushProgress").value = document.getElementById("scorepushed").value / score2p1;
+  document.getElementById("score2push1").innerHTML = score2p1;
+  document.getElementById("score2push2").innerHTML = score2p2;
+  
+}
+
+function pushedchange() {
+  document.getElementById("pushProgress").value = document.getElementById("scorepushed").value /  document.getElementById("score2push1").innerHTML;
+  var scorep = Number(document.getElementById("scorepushed").value);
+  while (scorep>120000) scorep -= 120000;
+  document.getElementById("smallProgress").value = scorep;
+}
+
+function pttbeforechange() {
+  var score = document.getElementById("before1push").value;
+  var singleconst = Number(document.getElementById("songconst").value);
+  var singlePTT = 0;
+  if (score >= 10000000) {
+    singlePTT = singleconst + 2;
+  }
+  else if (score >= 9800000) {
+    singlePTT = singleconst + 1 + (score - 9800000) / 200000;
+  }
+  else {
+    singlePTT = singleconst + 1 - (9800000 - score) / 300000;
+    if (singlePTT < 0) singlePTT = 0;
+  }
+  document.getElementById("singlepttbefore").innerHTML = singlePTT;
+}
+
+function pttafterchange() {
+  var score = document.getElementById("after1push").value;
+  var singleconst = Number(document.getElementById("songconst").value);
+  var singlePTT = 0;
+  if (score >= 10000000) {
+    singlePTT = singleconst + 2;
+  }
+  else if (score >= 9800000) {
+    singlePTT = singleconst + 1 + (score - 9800000) / 200000;
+  }
+  else {
+    singlePTT = singleconst + 1 - (9800000 - score) / 300000;
+    if (singlePTT < 0) singlePTT = 0;
+  }
+  document.getElementById("singlepttafter").innerHTML = singlePTT;
+}
+
+function pttcalcscore(targetptt, chartconst) {
+  if (targetptt - chartconst >= 2) {
+    return 10000000;
+  } else if (targetptt - chartconst >= 1) {
+    return (9800000 + (targetptt - 1 - chartconst) * 200000);
+  } else {
+    return (9800000 + (targetptt - 1 - chartconst) * 300000);
+  }
+}
+
+function calc() {
+  var score1 = Number(document.getElementById("before1push").value);
+  var score2 = Number(document.getElementById("after1push").value);
+  var b10f = Number(document.getElementById("b10floor").value);
+  var b30f = Number(document.getElementById("b30floor").value);
+  var singlePTT1 = Number(document.getElementById("singlepttbefore").innerHTML);
+  var singlePTT2 = Number(document.getElementById("singlepttafter").innerHTML);
+  var singleconst = Number(document.getElementById("songconst").value);
+  var score0 = 0;
+  if (singlePTT1 >= b10f) {
+      if (score1 >= 9800000) {
+        score0 = (score2 - score1)*3;
+      } else if (score2 >= 9800000) {
+        score0 = (score2 - 9800000)*3 + (9800000 - score1)*2;
+      } else {
+        score0 = (score2 - score1)*2;
+      }
+  } else if (singlePTT1 >= b30f) {
+    if (singlePTT2 >= b10f) {
+      var score3 = pttcalcscore(b10f, singleconst);
+      if (score1 >= 9800000) {
+        score0 = (score2 - score3)*3 + (score3 - score1) * 1.5;
+      } else if (score2 >= 9800000) {
+        score0 = (score2 - score1) + (score2 - 9800000) * 0.5 + (score2 - score3);
+      } else {
+        score0 = (score2 - score3)*2 + (score3 - score1) * 1;
+      }
+    } else {
+      if (score1 >= 9800000) {
+        score0 = (score2 - score1)*1.5;
+      } else if (score2 >= 9800000) {
+        score0 = (score2 - 9800000)*1.5 + (9800000 - score1);
+      } else {
+        score0 = (score2 - score1);
+      }
+    }
+  } else {
+    score1 = pttcalcscore(b30f, singleconst);
+    if (singlePTT2 >= b10f) {
+      var score3 = pttcalcscore(b10f, singleconst);
+      if (score1 >= 9800000) {
+        score0 = (score2 - score3)*3 + (score3 - score1) * 1.5;
+      } else if (score2 >= 9800000) {
+        score0 = (score2 - score1) + (score2 - 9800000) * 0.5 + (score2 - score3);
+      } else {
+        score0 = (score2 - score3)*2 + (score3 - score1) * 1;
+      }
+    } else if (singlePTT2 >= b30f) {
+      if (score1 >= 9800000) {
+        score0 = (score2 - score1)*1.5;
+      } else if (score2 >= 9800000) {
+        score0 = (score2 - 9800000)*1.5 + (9800000 - score1);
+      } else {
+        score0 = (score2 - score1);
+      }
+    } else {
+      score0 = 0;
+    }
+  }
+  document.getElementById("scorepushed").value = Number(document.getElementById("scorepushed").value) + score0;
+  pushedchange();
+  document.getElementById("before1push").value = document.getElementById("after1push").value;
+  document.getElementById("after1push").value = "";
+  if (document.getElementById("ifautosave").checked) {
+    saveCookie();
+  }
+}
+
+  </script>
+</head>
+<body>
+	<h1>PTT推分计算 <button type="button" onclick="readCookie()">读取</button> <button type="button" onclick="saveCookie()">保存</button></h1>
+	<div id="attention" style="border-style:double;border-color:red;background:rgb(255,244,244);">
+      <p style="color:red;margin-left:20px;">注意：请不要在酒吧里点肥皂！<button type="button" onclick="iknow()" style="margin-left:20px;">确定</button></p>
+  </div>
+	<p style="color:grey">建议确保r10=b10以提高计算准确度</p>
+  <p>
+    要推的PTT: <input type="number" step="0.01" id="ptt2push" onchange="ptt2score()"><br/>
+    要推这些PTT，需要在b30和r10一共推分<span id="score2push1" style="color:blue">0</span> (或EX以上的<span id="score2push2" style="color:blue">0</span>)
+  </p>
+  <p>
+    已推的分数:<input type="number" step="1" id="scorepushed" onchange="pushedchange()"> (自动计算，仅在填错或需要重置时手动修改)<br/>
+    总推分进度：<progress id="pushProgress" value="0" max="1"></progress><br/>
+    下一个0.01：<progress id="smallProgress" value="0" max="120000"></progress> 
+  </p>
+  <p>
+    b10地板: <input type="number" step="0.0001" id="b10floor"><br/>
+    b30地板: <input type="number" step="0.0001" id="b30floor">
+  </p>
+  <p>
+    此次推分定数<input type="number" step="0.1" id="songconst" onchange="pttbeforechange();pttafterchange();"> 
+    单曲ptt: <span id="singlepttbefore" style="color:blue">0</span>
+    &#45;&gt;<span id="singlepttafter" style="color:blue">0</span><br/>
+    由<input type="number" step="1" id="before1push" onchange="pttbeforechange();">
+    推至<input type="number" step="1" id="after1push" onchange="pttafterchange();"><br/>
+    <button type="button" onclick="calc()">确定</button> 
+    <input type="checkbox" id="ifautosave" value="1">自动保存
+  </p>
+</body>
+</html>
