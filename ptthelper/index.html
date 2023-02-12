@@ -41,10 +41,10 @@ function saveCookie() {
   var d = new Date();
   d.setTime(d.getTime()+(exdays*365*24*60*60*1000));
   var expires = "expires="+d.toGMTString();
-  var ptt2push = Number(document.getElementById("ptt2push").value);
-  var scorepushed = Number(document.getElementById("scorepushed").value);
-  var b10floor = Number(document.getElementById("b10floor").value);
-  var b30floor = Number(document.getElementById("b30floor").value);
+  var ptt2push = document.getElementById("ptt2push").value;
+  var scorepushed = document.getElementById("scorepushed").value;
+  var b10floor = document.getElementById("b10floor").value;
+  var b30floor = document.getElementById("b30floor").value;
   document.cookie = "ptt2push" + "=" + ptt2push + "; " + expires;
   document.cookie = "scorepushed" + "=" + scorepushed + "; " + expires;
   document.cookie = "b10floor" + "=" + b10floor + "; " + expires;
