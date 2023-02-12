@@ -34,13 +34,7 @@ function readCookie() {
 }
 
 function saveCookie() {
-  document.cookie = "ptt2push=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-  document.cookie = "scorepushed=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-  document.cookie = "b10floor=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-  document.cookie = "b30floor=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-  var d = new Date();
-  d.setTime(d.getTime()+(exdays*30*24*60*60*1000));
-  var expires = "expires="+d.toGMTString();
+  var expires = "expires="+"Fri, 01 Jan 2100 00:00:00 GMT";
   var ptt2push = document.getElementById("ptt2push").value;
   var scorepushed = document.getElementById("scorepushed").value;
   var b10floor = document.getElementById("b10floor").value;
